@@ -1,0 +1,37 @@
+name: Compile Frida Script
+
+on:
+  push:
+    branches:
+      - '**'  # Run on any branch
+  pull_request:
+    branches:
+      - '**'  # Run on any branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'  # or any version compatible with frida-compile
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Install frida-compile
+      run: npm install -g frida-compile  # Install frida-compile globally
+
+    - name: Compile Frida script
+      run: frida-compile agent.js -o compiled.js
+
+    - name: Upload compiled script
+      uses: actions/upload-artifact@v2
+      with:
+        name: compiled-js
+        path: compiled.js
